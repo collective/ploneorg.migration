@@ -1,0 +1,75 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="ploneorg.migration">
+
+    <utility
+        component=".blueprints.PrettyPrinter"
+        name="ploneorg.migration.sections.pprinter"
+        />
+
+    <utility
+        component=".blueprints.DataFields"
+        name="ploneorg.migration.sections.datafields"
+        />
+
+    <utility
+        component=".blueprints.WorkflowHistory"
+        name="ploneorg.migration.sections.workflowupdater"
+        />
+
+    <utility
+        component=".catalogsource.CatalogSourceSection"
+        name="ploneorg.migration.catalogsource"
+        />
+
+    <utility
+        component=".blueprints.LocalRoles"
+        name="ploneorg.migration.localroles"
+        />
+
+    <utility
+        component=".blueprints.LeftOvers"
+        name="ploneorg.migration.leftovers"
+        />
+
+    <utility
+        component=".logger.LoggerSection"
+        name="ploneorg.migration.logger"
+        />
+
+    <utility
+        component=".schemaupdater.DexterityUpdateSection"
+        name="ploneorg.migration.schemaupdater"
+        />
+
+    <utility
+        component=".blueprints.FieldsCorrector"
+        name="ploneorg.migration.fieldscorrector"
+        />
+
+    <utility
+        component=".blueprints.PAMLinker"
+        name="ploneorg.migration.pamlinker"
+        />
+
+    <utility
+        component=".blueprints.OrderSection"
+        name="ploneorg.migration.order"
+        />
+
+    <transmogrifier:registerConfig
+        name="plone.org.main"
+        title="Migration configuration for querying the catalog of a Plone site"
+        configuration="ploneorg.cfg"
+        />
+
+    <browser:page
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        name="ploneorg_migration_main"
+        class=".migrations.PloneorgMigrationMain"
+        permission="zope2.View"
+        />
+
+</configure>

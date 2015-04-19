@@ -1,0 +1,6 @@
+[report]
+include =
+    src/ploneorg/*
+omit =
+    */test*
+    */upgrades/*
