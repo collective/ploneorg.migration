@@ -4,7 +4,6 @@ from datetime import datetime
 
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
-from plone.app.textfield.utils import getSiteEncoding
 
 from plone.namedfile.interfaces import INamedField
 from plone.supermodel.interfaces import IToUnicode
@@ -20,6 +19,9 @@ from zope.schema.interfaces import IFromUnicode
 from interfaces import ISerializer, IDeserializer
 
 import requests
+
+
+default_encoding = 'utf-8'
 
 
 class NamedFileSerializer(object):
@@ -127,7 +129,7 @@ class RichTextDeserializer(object):
 
     def __call__(self, value, filestore, item, disable_constraints=False):
         if isinstance(value, dict):
-            encoding = value.get('encoding', getSiteEncoding())
+            encoding = value.get('encoding', default_encoding)
             contenttype = value.get('contenttype', None)
             if contenttype is not None:
                 contenttype = str(contenttype)
@@ -137,8 +139,7 @@ class RichTextDeserializer(object):
             else:
                 data = self._convert_object(value['data'],encoding)
         else:
-            encoding = getSiteEncoding()
-            data = self._convert_object(value,encoding)
+            data = self._convert_object(value, default_encoding)
             contenttype = None
         if contenttype is None:
             contenttype = self.field.default_mime_type
