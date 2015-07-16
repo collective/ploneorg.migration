@@ -337,7 +337,7 @@ class LeftOvers(object):
                     obj.creation_date = DateTime(item.get('creation_date'))
 
             if item.get('modification_date', False):
-                if IDexterityContent.providedBy(item):
+                if IDexterityContent.providedBy(obj):
                     obj.modification_date = datetime.strptime(item.get('modification_date'), '%Y-%m-%d %H:%M')
                 else:
                     obj.creation_date = DateTime(item.get('modification_date'))

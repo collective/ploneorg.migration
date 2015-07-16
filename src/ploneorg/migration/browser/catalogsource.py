@@ -91,6 +91,8 @@ class CatalogSourceSection(object):
             if not skip:
                 self.storage.append(path)
 
+                item = self.get_remote_item(path)
+
                 if item:
                     item['_path'] = item['_path'][self.site_path_length:]
                     item['_auth_info'] = (self.remote_username, self.remote_password)
