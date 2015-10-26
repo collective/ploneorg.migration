@@ -136,6 +136,8 @@ class DexterityUpdateSection(object):
                             except AttributeError:
                                 pass
                         field.set(field.interface(obj), default)
-
-                notify(ObjectModifiedEvent(obj))
+                try:
+                    notify(ObjectModifiedEvent(obj))
+                except:
+                    print 'Error probably in linkintegrity transform'
             yield item
