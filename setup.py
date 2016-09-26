@@ -43,6 +43,7 @@ setup(
     install_requires=[
         'plone.api',
         'setuptools',
+        'requests',
         'transmogrify.dexterity',
         'quintagroup.transmogrifier',
         'collective.jsonmigrator',
