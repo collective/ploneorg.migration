@@ -1,7 +1,7 @@
 import base64
 import urllib
 import urllib2
-import simplejson
+import json
 from zope.interface import classProvides, implements
 from collective.transmogrifier.interfaces import ISectionBlueprint
 from collective.transmogrifier.interfaces import ISection
@@ -56,7 +56,7 @@ class CatalogSourceSection(object):
         # Make request
         resp = requests.get('{}{}/get_catalog_results'.format(self.remote_url, catalog_path), params=self.payload, auth=(self.remote_username, self.remote_password))
 
-        self.item_paths = sorted(simplejson.loads(resp.text))
+        self.item_paths = sorted(json.loads(resp.text))
         self.item_count['total'] = len(self.item_paths)
         self.item_count['remaining'] = len(self.item_paths)
 
@@ -89,14 +89,15 @@ class CatalogSourceSection(object):
                 skip = True
 
             if not skip:
-                self.storage.append(path)
-
                 item = self.get_remote_item(path)
 
                 if item:
                     item['_path'] = item['_path'][self.site_path_length:]
                     item['_auth_info'] = (self.remote_username, self.remote_password)
                     item['_site_path_length'] = self.site_path_length
+
+                    # Enable logging
+                    self.storage.append(item['_path'])
 
                     # ptype = item.get('_type', False)
                     yield item
@@ -113,8 +114,8 @@ class CatalogSourceSection(object):
             self.errored.append(path)
             return None
         try:
-            item = simplejson.loads(item_json)
-        except simplejson.JSONDecodeError:
+            item = json.loads(item_json)
+        except json.JSONDecodeError:
             logger.error("Could not decode item from %s." % item_url)
             logger.error("Response is %s." % item_json)
             self.errored.append(path)
