@@ -65,6 +65,11 @@
         name="ploneorg.migration.pathmanipulator"
         />
 
+    <utility
+        component=".blueprints.CioppinoTwoThumbsRatings"
+        name="ploneorg.migration.cioppinotwothumbsratings"
+        />
+
     <transmogrifier:registerConfig
         name="plone.org.main"
         title="Migration configuration for querying the catalog of a Plone site"

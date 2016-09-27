@@ -40,6 +40,14 @@ else:
     from plone.app.multilingual.interfaces import ITranslationManager
     HAS_PAM = True
 
+try:
+    pkg_resources.get_distribution('cioppino.twothumbs')
+except pkg_resources.DistributionNotFound:
+    HAS_RATINGS = False
+else:
+    from cioppino.twothumbs import rate
+    HAS_RATINGS = True
+
 migration_error = logging.getLogger('migration_error')
 
 VALIDATIONKEY = 'ploneorg.migration.logger'
@@ -652,5 +660,34 @@ class PathManipulator(object):
                 item['_path'] = '/'.join(result_path)
 
             # import ipdb; ipdb.set_trace()
+
+            yield item
+
+
+class CioppinoTwoThumbsRatings(object):
+
+    """ Migrate ratings from cioppino.twothumbs
+    """
+
+    classProvides(ISectionBlueprint)
+    implements(ISection)
+
+    def __init__(self, transmogrifier, name, options, previous):
+        self.previous = previous
+        self.context = transmogrifier.context
+
+    def __iter__(self):
+        for item in self.previous:
+            if item.get('_ratings', False):
+                obj = self.context.unrestrictedTraverse(str(item['_path']).lstrip('/'), None)
+                if obj is None:
+                    # path doesn't exist
+                    yield item; continue
+                yays = 'cioppino.twothumbs.yays'
+                nays = 'cioppino.twothumbs.nays'
+                rate.setupAnnotations(obj)
+                annotations = IAnnotations(obj)
+                annotations[yays] = item['_ratings']['ups']
+                annotations[nays] = item['_ratings']['downs']
 
             yield item

@@ -115,7 +115,7 @@ class CatalogSourceSection(object):
             return None
         try:
             item = json.loads(item_json)
-        except json.JSONDecodeError:
+        except:
             logger.error("Could not decode item from %s." % item_url)
             logger.error("Response is %s." % item_json)
             self.errored.append(path)
