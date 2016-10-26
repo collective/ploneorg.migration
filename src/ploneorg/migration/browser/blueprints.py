@@ -195,18 +195,24 @@ class WorkflowHistory(object):
             if IBaseObject.providedBy(obj) or IDexterityContent.providedBy(obj):
                 item_tmp = deepcopy(item)
 
-                wf_hist_temp = deepcopy(item[workflowhistorykey])
+                current_obj_wf = self.wftool.getWorkflowsFor(obj)[0].id
 
-                for workflow in wf_hist_temp:
-                    # Normalize workflow
-                    if workflow == u'genweb_review':
-                        for k, workflow2 in enumerate(item_tmp[workflowhistorykey]['genweb_review']):
-                            if 'review_state' in item_tmp[workflowhistorykey]['genweb_review'][k]:
-                                if item_tmp[workflowhistorykey]['genweb_review'][k]['review_state'] == u'esborrany':
-                                    item_tmp[workflowhistorykey]['genweb_review'][k]['review_state'] = u'visible'
+                # At least copy the previous history to the new workflow (if not the same)
+                # Asuming one workflow
+                item_tmp[workflowhistorykey].update({current_obj_wf: item_tmp[workflowhistorykey][item_tmp[workflowhistorykey].keys()[0]]})
 
-                        item_tmp[workflowhistorykey]['genweb_simple'] = item_tmp[workflowhistorykey]['genweb_review']
-                        del item_tmp[workflowhistorykey]['genweb_review']
+                # In case that we need to change internal state names
+                # wf_hist_temp = deepcopy(item[workflowhistorykey])
+                # for workflow in wf_hist_temp:
+                #     # Normalize workflow
+                #     if workflow == u'genweb_review':
+                #         for k, workflow2 in enumerate(item_tmp[workflowhistorykey]['genweb_review']):
+                #             if 'review_state' in item_tmp[workflowhistorykey]['genweb_review'][k]:
+                #                 if item_tmp[workflowhistorykey]['genweb_review'][k]['review_state'] == u'esborrany':
+                #                     item_tmp[workflowhistorykey]['genweb_review'][k]['review_state'] = u'visible'
+                #
+                #         item_tmp[workflowhistorykey]['genweb_simple'] = item_tmp[workflowhistorykey]['genweb_review']
+                #         del item_tmp[workflowhistorykey]['genweb_review']
 
                 # get back datetime stamp and set the workflow history
                 for workflow in item_tmp[workflowhistorykey]:
@@ -355,6 +361,10 @@ class LeftOvers(object):
                     obj.modification_date = datetime.strptime(item.get('modification_date'), '%Y-%m-%d %H:%M')
                 else:
                     obj.creation_date = DateTime(item.get('modification_date'))
+
+            # Set subjects
+            if item.get('subject', False):
+                obj.setSubject(item['subject'])
 
             yield item
 
